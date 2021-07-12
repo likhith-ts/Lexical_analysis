@@ -9,7 +9,16 @@ int main()
     f= fopen("code.txt","w");
     if(f == NULL)
     printf("buffer!!");
-    scanf("%[32-125]%*c",str);
+    while(1)
+    {
+        str[i]=getchar();
+        if(str[i]==95)
+        {
+            break;
+        }
+        i++;
+    }    
+    str[i-1]='\0';
     fprintf(f,"%s",str);
     fclose(f); 
 }
