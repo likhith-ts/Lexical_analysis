@@ -5,7 +5,7 @@ int main()
 {
     FILE *f;
     char str[100000];int i=0;
-    printf("enter:\n");
+    printf("Enter Your(type and enter _ to end input):\n");
     f= fopen("code.txt","w");
     if(f == NULL)
     printf("buffer!!");
