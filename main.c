@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<string.h>
 #include<conio.h>
 #include<stdlib.h>
 int main()
@@ -18,7 +19,25 @@ int main()
         }
         i++;
     }    
-    str[i-1]='\0';
+    str[i]=feof(f);
     fprintf(f,"%s",str);
     fclose(f); 
+    int count = 0;i=0;
+    f=fopen("code.txt","r");
+    char chr;
+    chr= getc(f);
+    while (chr != EOF)
+    {
+        if (chr == '\n')
+        {
+            count++;
+        }
+        chr = getc(f);
+    }
+    if (chr!='\n')
+    {
+       count++;
+    }
+    printf("Number of line in code (NL0C) => %d",count);
+    fclose(f);
 }
