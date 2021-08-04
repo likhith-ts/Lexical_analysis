@@ -2,22 +2,23 @@
 #include<string.h>
 #include<conio.h>
 #include<stdlib.h>
+#include<ctype.h>
 FILE *f;
-char ch;
+char str[10000000],ch;
 void NLOC();
 void codeMenu();
 void write();
-void modify();
+void appendCode();
+//void modifyCode();
 void showCode();
 void tokenMenu();
-int totToken();
-int indvToken();
+void totToken();
+void indvToken();
 struct Token    //structure to store token information.
 {
     int total,oper,keyW;
     int str,cons,ident,sym;
-}T;
-
+}T={0};
 int main()
 {
     do
@@ -32,7 +33,6 @@ int main()
         switch (ch)
         {
         case '1':
-            //under development!!
             codeMenu();
             break;
         case '2':
@@ -53,7 +53,7 @@ int main()
             printf("\nEnter Proper choice!!");
             break;
         }
-        printf("\nWant to continue?[y:n]");
+        printf("\nWant to continue?[y/n]");
         ch= getch();
     } while (ch!='n');
 }
@@ -63,8 +63,8 @@ void codeMenu()
     do{
                         
         system("cls");
-        printf("\n\t\t\t\t\t\t\t\t\tCode Input\n");
-        printf("1.Write Code\n2.Modify/append existing code\n");
+        printf("\n\t\t\t\t\t\t\t\tCode Input\n");
+        printf("1.Write Code\n2.Append Code\n");
         printf("3.Show Code\n4.Exit to main menu\n5.Exit\n");
         printf("Enter your choice: ");
         ch=getch();
@@ -74,7 +74,7 @@ void codeMenu()
                 write();
                 break;
             case '2':
-                modify();
+                appendCode();
                 break;
             case '3':
                 showCode();
@@ -83,24 +83,28 @@ void codeMenu()
                 main();
                 break;
             case '5':
+                printf("\n Thank you!\n");
                 exit(0);
                 break;
             default:
+                printf("\nInvalid choice entered!!\n");
                 break;
         }
         again:
-        printf("\npress[y]to continue, 4 to exit to main menu and[n]to exit: ");
+        printf("\n*press[y]to continue\n*press[n]to exit\n*press[4]to go back to main menu\n>_");
         ch=getch();
         if(ch!='y'&&ch!='4'&&ch!='n') {printf("Invalid choice!!"); goto again;}
         else if(ch=='n') {printf("\nThank you");exit(0);}
     }while(ch!='4');
+    main();
 }
 //menu driven function for token count
 void tokenMenu()
 {
-    system("cls");
+    
     do{
-        printf("\n\t\t\t\t\t\t\t\t\tTOKEN COUNT\n");
+        system("cls");
+        printf("\n\t\t\t\t\t\t\t\tTOKEN COUNT\n");
         printf("1.Total Token Count\n2.Classified Token count\n");
         printf("3.Most Repeated Token\n4.Back To Main menu\n");
         printf("Enter your choice: ");
@@ -126,7 +130,7 @@ void tokenMenu()
             break;
         }
         again:
-        printf("\npress[y]to continue, 4 to exit to main menu and[n]to exit: ");
+        printf("\n*press[y]to continue\n*press[n]to exit\n*press[4]to go back to main menu\n>_");
         ch=getch();
         if(ch!='y'&&ch!='4'&&ch!='n') {printf("Invalid choice!!"); goto again;}
         else if(ch=='n') {printf("\nThank you");exit(0);}
@@ -135,7 +139,7 @@ void tokenMenu()
 }
 
 //func to calculate indvToken
-int indvToken()
+void indvToken()
 {
     f= fopen("code.txt", "r");
     fseek(f,0,SEEK_END);
@@ -148,22 +152,92 @@ int indvToken()
         ++i;
         s[i]=getc(f);
     }
-    printf("\n");
-    puts(s);
+    //for loop to count symbols
+    for(int i=0;i<=strlen(s);i++)
+    {
+        if (s[i] == ',' || s[i] == ';' || s[i] == '(' || s[i] == ')' ||
+        s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == '#' || s[i] == '\"')
+        {
+            //printf("\n%c",s[i]); -> just for debugging
+            ++T.sym; 
+        }
+        
+    }
+    //for loop to count constant values
+    for (i = 0; i < strlen(s);i++)
+    {
+        for(int j = i; j <strlen(s);j++)
+        {
+            if (isdigit(s[j])!=0)
+            {
+                //printf("\n%c\n", s[j]); -> just for debugging
+                if(isdigit(s[j+1])!=0)
+                continue;
+                else
+                {
+                    ++T.cons;
+                    i=j; 
+                    break;
+                }
+            }
+        } 
+    }  
+    //for loop to count operators 
+    for(int i = 0; i <strlen(s);i++)
+    {
+         
+        if ( s[i] == '/' || s[i] == '>' || s[i] == '<' )
+        T.oper++;
+        if(s[i] == '*')
+        {
+            if(s[i+1] == '*')
+            {T.oper++; i=i++;}
+            else
+            T.oper++;
+        }
+        if(s[i] == '!'&&s[i+1] == '>')
+        {
+           T.oper++; i=i+2; 
+        }
+        if(s[i] == '!'&&s[i+1] == '<')
+        {
+            T.oper++; i=i+2; 
+        }
+        if(s[i] == '=')
+        {
+            if(s[i+1] == '=')
+            {T.oper++; i++; continue;}
+            else
+            T.oper++;
+        }
+        if(s[i] == '+' || s[i] == '-')
+        {
+            if(s[i+1] == '+' || s[i+1] == '-')
+            {
+                T.oper++; i++;
+                continue;
+            }
+            else
+            T.oper++;
+        }
+        
+    }
+    printf("\nOperators: %d\n",T.oper);
+    printf("Symbols  : %d\n",T.sym);
+    printf("Constants: %d\n",T.cons);
     fclose(f);
 }
 
 //func to count total no of token
-int totToken()
+void totToken()
 {
     T.total=T.cons+T.ident+T.keyW+T.oper+T.str+T.sym;
-    return T.total;
+    printf("Total No of Token: %d\n",T.total);
 }
 
 //function to write
 void write()
 {
-    char str[100000]; 
     int i=0;
     printf("\nEnter Your Code(type and enter _ to end input):\n");
     f= fopen("code.txt","w");
@@ -177,23 +251,22 @@ void write()
             break;
         }
         i++;
-    }
-    str[i]=feof(f);    
+    }   
+    str[i]=feof(f);
     fprintf(f,"%s",str);
     if(f!=NULL)
     printf("Code saved to code.txt successfuly!!");
     fclose(f); 
 }
 //modify
-void modify()
+void appendCode()
 {
-    char str[100000]; 
+    showCode();
     int i=0;
-    printf("\nAppend Your Code(type and enter _ to end input):\n");
     f= fopen("code.txt","a");
+    printf("\nEnter Your Code(type and enter _ to end input):\n");
     if(f == NULL)
     printf("file not exist!!");
-    fprintf(f,"\n");
     while(1)
     {
         str[i]=getchar();
@@ -204,7 +277,6 @@ void modify()
         i++;
     }    
     str[i]=feof(f);
-    fseek(f,0,SEEK_END);
     fprintf(f,"%s",str);
     if(f!=NULL)
     printf("Code saved to code.txt successfuly!!");
@@ -213,9 +285,10 @@ void modify()
 //show code
 void showCode()
 {
+    printf("\nThe Code that was saved last time:\n ");
     f= fopen("code.txt", "r");
     fseek(f,0,SEEK_END);
-    int const fileSize = ftell(f);int i=0;
+    const int fileSize = ftell(f);int i=0;
     char s[fileSize];
     fseek(f,0,SEEK_SET);
     s[i]=getc(f);
@@ -246,6 +319,6 @@ void NLOC()
     {
        count++;
     }
-    printf("Number of line in code (NL0C) => %d",count);
+    printf("Number of lines in code (NL0C) is : %d",count);
     fclose(f);
 }

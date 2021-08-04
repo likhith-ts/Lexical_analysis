@@ -1,14 +1,7 @@
-#include <stdio.h>
-#define MAX 15 
-int main()
+#include<stdio.h>
+void main()
 {
-    char buf[MAX];
-    printf("Enter a string: ");
-    gets(buf);
-    printf("string is: %s\n", buf);
-    return 0;
-}
-hello_
-tony
-
-hello
+  printf("hellow");
+  return 0;
+}newline
+newline2
