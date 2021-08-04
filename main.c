@@ -195,11 +195,15 @@ void indvToken()
             else
             T.oper++;
         }
-        if(s[i] == '!'&&s[i+1] == '>')
+        if(s[i] == '>'&&s[i+1] == '=')
         {
            T.oper++; i=i+2; 
         }
-        if(s[i] == '!'&&s[i+1] == '<')
+        if(s[i] == '<'&&s[i+1] == '=')
+        {
+            T.oper++; i=i+2; 
+        }
+        if(s[i] == '!'&&s[i+1] == '=')
         {
             T.oper++; i=i+2; 
         }
