@@ -15,6 +15,7 @@ void specificToken(int a);
 void countToken();
 void keywordCount();
 void operatorCount();
+void identifierCount();
 struct Token    //structure to store token count information.
 {
     int total,oper,keyW;
@@ -112,7 +113,7 @@ void tokenMenu()
 {
     int x;
     do{
-        system("cls");
+        //system("cls");
         countToken();
         printf("\n\t\t\t\t\t\t\t\tTOKEN COUNT\n");
         printf("1.Total No of Tokens\n2.Classified Token count\n");
@@ -284,6 +285,7 @@ void countToken()
     }
     keywordCount();// calling function function to count keywords
     operatorCount();
+    identifierCount();
     T.oper= ops.arithmetic+ops.assignment+ops.bitwise+ops.logical+ops.relational+ops.misc;
     T.cons= con.strings+con.chr+con.decimals;
     T.total=T.cons+T.ident+T.keyW+T.oper+T.sym;
@@ -399,6 +401,87 @@ void keywordCount()
         else if(strcmp(s2,"static")==0||strcmp(s2,"struct")==0||strcmp(s2,"switch")==0||strcmp(s2,"typedef")==0
         ||strcmp(s2,"union")==0||strcmp(s2,"unsigned")==0||strcmp(s2,"void")==0||strcmp(s2,"volatile")==0||strcmp(s2,"while")==0)
         T.keyW++;
+        }
+    }
+}
+//function to count identifiers 
+void identifierCount()
+{
+    f= fopen("code.txt ", "r");
+    fseek(f,0,SEEK_END);
+    int const fileSize = ftell(f);int i=0;
+    char s[fileSize]; char s2[10000];
+    fseek(f,0,SEEK_SET);
+    while(s[i]!= EOF) //while to get all char from file
+    {
+        ++i;
+        s[i]=getc(f);
+    }
+    for(int i= 0; i <strlen(s);i++)
+    {
+        char s2[10000]={"\0"};
+        for(int j=i; j <strlen(s);j++)// for parsing string
+        {
+            if(isalpha(s[j])!=0&&(s[j]!=' '))
+            {
+                s2[j-i]=s[j];
+            }
+            else
+            {
+                i=j;
+                break;
+            }
+        }
+        //to count variable and function names
+        if(strcmp(s2,"int")==0||strcmp(s2,"float")==0||strcmp(s2,"char")==0||strcmp(s2,"double")==0)
+        {
+            if(isalpha(s[i+1])!=0||s[i+1]=='_'||(s[i+1]='*'&&isalpha(s[i+2])!=0))
+            {
+                for(int j=i+1;j<strlen(s);j++)
+                {
+                    if(isalnum(s[j])!=0||s[j]=='_'||s[j]=='['||s[j]=='*')
+                    {
+                        continue;
+                    }
+                    else if(s[j]==',')
+                    {
+                        ++T.ident;
+                        continue;
+                    }
+                    else if(s[j]==']')
+                    {
+                        ++T.ident;
+                        if(s[j+1]==',')
+                        ++j;
+                        else if(s[j+1]==';')
+                        {++j; break; }
+                        continue;
+                    }
+                    else if(ispunct(s[j])!=0)
+                    {
+                        ++T.ident;
+                        break;
+                    }
+                }
+            }
+        }
+        if(strcmp(s2,"struct")==0||strcmp(s2,"union")==0)
+        {
+            if(isalpha(s[i+1])!=0||s[i+1]=='_')
+            {
+                for(int j=i+1;j<strlen(s);j++)
+                {
+                    if(isalnum(s[j])!=0||s[j]=='_')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        T.ident++;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
