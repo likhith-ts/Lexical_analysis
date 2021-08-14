@@ -591,7 +591,7 @@ void showCode()
 void NLOC()
 {
     int count = 0;
-    f=fopen("code.dat","r");
+    f=fopen("code.txt","r");
     char chr;
     chr= getc(f);
     while (chr != EOF)
