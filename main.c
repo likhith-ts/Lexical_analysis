@@ -105,7 +105,7 @@ void codeMenu()
         ch=getch();
         if(ch!='y'&&ch!='b'&&ch!='n') {printf("Invalid choice!!"); goto again;}
         else if(ch=='n') {printf("\nThank you");exit(0);}
-    }while(ch!='4');
+    }while(ch!='b');
     main();
 }
 //menu driven function for token count
@@ -113,7 +113,7 @@ void tokenMenu()
 {
     int x;
     do{
-        //system("cls");
+        system("cls");
         countToken();
         printf("\n\t\t\t\t\t\t\t\tTOKEN COUNT\n");
         printf("1.Total No of Tokens\n2.Classified Token count\n");
@@ -123,12 +123,10 @@ void tokenMenu()
         switch (ch)
         {
         case '1':
-            printf("under Devlopment!!\n");
             printf("Total No of Token: %d\n",T.total);
             break;
         case '2':
             system("cls");
-            printf("under Devlopment!!\n");
             printf("Operators  : %d\n",T.oper);
             printf("Symbols    : %d\n",T.sym);
             printf("Constants  : %d\n",T.cons);
@@ -138,7 +136,6 @@ void tokenMenu()
         case '3':
             system("cls");
             try:
-            printf("under Devlopment!!\n");
             printf("1.KeyWords\n2.Identifier\n3.Operators\n4.Symbols\n5.Constants\nEnter Your choice:");
             scanf("%d",&x);
             if(x<=5)
